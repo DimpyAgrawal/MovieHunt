@@ -56,7 +56,7 @@ app.get('/search', async (req, res) => {
 
 app.get('/movieById', async (req, res) => {
     const { imdbID } = req.query;
-    console.log('inside movie api');
+    //console.log('inside movie api');
     
     if (!imdbID) {
         return res.status(400).json({ error: 'IMDb ID is required' });
