@@ -1,10 +1,12 @@
 import axios from 'axios';
-import React, { useCallback,useMemo, useEffect, useState } from 'react'
+import React, { useCallback, useMemo, useEffect, useState } from 'react'
 import debounce from 'lodash';
 import { throttle } from 'lodash';
 import '../App.css'
+import { useNavigate } from 'react-router-dom';
 
 function Playlists() {
+  const navigate = useNavigate();
 
   const [userList, setUserList] = useState([]);
   const [movieDetail, setMovieDetail] = useState([]);
@@ -33,105 +35,105 @@ function Playlists() {
     setLoding(true);
     const details = [];
     for (let i = 0; i < userList.length; i++) {
-        const movieId = userList[i].id;
-        const isPublic = userList[i].public;
+      const movieId = userList[i].id;
+      const isPublic = userList[i].public;
 
-        try {
-            const response = await axios.get(`http://localhost:8080/movieById?imdbID=${movieId}`);
-            const movieDetails = response.data;
-            movieDetails.public = isPublic; // Add the public field to the movie details
+      try {
+        const response = await axios.get(`http://localhost:8080/movieById?imdbID=${movieId}`);
+        const movieDetails = response.data;
+        movieDetails.public = isPublic; // Add the public field to the movie details
 
-            details.push(movieDetails);
+        details.push(movieDetails);
 
-            setMovieDetail(details);
-            setLoding(false);
+        setMovieDetail(details);
+        setLoding(false);
 
-            // console.log(details);
-        } catch (err) {
-            console.log('Error in fetching movie details', err);
-        }
+        // console.log(details);
+      } catch (err) {
+        console.log('Error in fetching movie details', err);
+      }
     }
 
     // console.log(details); 
-});
+  });
 
-const handlePublic = useCallback(async (imdbID) => {
+  const handlePublic = useCallback(async (imdbID) => {
     console.log('inside handlePublic', imdbID + " " + userId);
     try {
-        await axios.put("http://localhost:8080/movie/makePublic", { imdbID, userId }, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        // Update the movie list to reflect the change
-        setMovieDetail(prevMovieDetail => 
-            prevMovieDetail.map(movie => movie.imdbID === imdbID ? { ...movie, public: true } : movie)
-        );
+      await axios.put("http://localhost:8080/movie/makePublic", { imdbID, userId }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+      });
+      // Update the movie list to reflect the change
+      setMovieDetail(prevMovieDetail =>
+        prevMovieDetail.map(movie => movie.imdbID === imdbID ? { ...movie, public: true } : movie)
+      );
     } catch (err) {
-        console.log('Error submitting Movie', err);
+      console.log('Error submitting Movie', err);
     }
-})
+  })
 
-const handlePrivate = useCallback(async (imdbID) => {
+  const handlePrivate = useCallback(async (imdbID) => {
     console.log('inside handlePrivate', imdbID + " " + userId);
     try {
-        await axios.put("http://localhost:8080/movie/makePrivate", { imdbID, userId }, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
-            }
-        });
-        // Update the movie list to reflect the change
-        setMovieDetail(prevMovieDetail => 
-            prevMovieDetail.map(movie => movie.imdbID === imdbID ? { ...movie, public: false } : movie)
-        );
+      await axios.put("http://localhost:8080/movie/makePrivate", { imdbID, userId }, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+      });
+      // Update the movie list to reflect the change
+      setMovieDetail(prevMovieDetail =>
+        prevMovieDetail.map(movie => movie.imdbID === imdbID ? { ...movie, public: false } : movie)
+      );
     } catch (err) {
-        console.log('Error submitting Movie', err);
+      console.log('Error submitting Movie', err);
     }
-})
+  })
 
-// const debouncedListData = useMemo(() => debounce(listData, 300), [listData]);
-// const throttledFetchMovieDetails = useMemo(() => throttle(fetchMovieDetails, 1000), [fetchMovieDetails]);
+  // const debouncedListData = useMemo(() => debounce(listData, 300), [listData]);
+  // const throttledFetchMovieDetails = useMemo(() => throttle(fetchMovieDetails, 1000), [fetchMovieDetails]);
 
-// useEffect(() => {
-//   debouncedListData();
-//   return () => {
-//     debouncedListData.cancel();
-//   };
-// }, [debouncedListData]);
+  // useEffect(() => {
+  //   debouncedListData();
+  //   return () => {
+  //     debouncedListData.cancel();
+  //   };
+  // }, [debouncedListData]);
 
 
 
-// useEffect(() => {
-//   if (userList.length > 0) {
-//     throttledFetchMovieDetails();
-//   }
-//   return () => {
-//     throttledFetchMovieDetails.cancel();
-//   };
-// }, [userList, throttledFetchMovieDetails]);
+  // useEffect(() => {
+  //   if (userList.length > 0) {
+  //     throttledFetchMovieDetails();
+  //   }
+  //   return () => {
+  //     throttledFetchMovieDetails.cancel();
+  //   };
+  // }, [userList, throttledFetchMovieDetails]);
 
   useEffect(() => {
     listData();
-  
+
   }, [])
 
   useEffect(() => {
-    if (userList.length > 0){
-        fetchMovieDetails();
+    if (userList.length > 0) {
+      fetchMovieDetails();
 
-    } 
+    }
 
   }, [userList])
 
   return (
     <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 gap-20 p-6 mr-[10%] ml-[10%] mx-auto">
-                  {loading && <div className="loader"></div>}
+      {loading && <div className="loader"></div>}
 
       {movieDetail.map(m => (
         <div key={m.id} className="bg-white shadow-md rounded-lg overflow-hidden">
-          <img src={m.Poster} alt={m.Title} className="w-96 h-64 object-cover m-auto" />
+          <img src={m.Poster} alt={m.Title}  className="w-96 h-64 object-cover m-auto" />
           <div className="p-4">
             <h2 className="text-xl font-semibold text-gray-800 mb-2">{m.Title}</h2>
             <p className="flex text-black m-auto justify-around font-semibold">{m.Year}</p>

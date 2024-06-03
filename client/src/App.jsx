@@ -5,6 +5,8 @@ import Home from './components/Home'
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import MovieSearch from './components/MovieSearch';
+import MovieDetails from './components/MovieDetails';
+import { ToastContainer } from 'react-toastify';
 
 // Lazy load the components
 
@@ -23,9 +25,11 @@ function App() {
             <Route exact path='/signup' element={<SignUp />} />
             <Route exact path='/playlists' element={<Playlists />} />
             <Route exact path='/usersplaylists' element={<UsersPlaylists />} />
+            <Route exact path='/moviedetails' element={<MovieDetails />} />
           </Routes>
         </Suspense>
       </BrowserRouter>
+      <ToastContainer/>
     </div>
   );
 }
