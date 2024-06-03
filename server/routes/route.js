@@ -155,7 +155,20 @@ router.get('/allPublicMovies', async (req, res) => {
       console.error(err);
       res.status(400).json({ message: 'Internal server error' });
     }
-  });
+});
+
+router.get('/allUsersData',async(req,res)=>{
+    try{
+        const userData = await User.find();  
+        if(!userData || userData.length === 0) return res.status(404).json({message:'user data does not exist'});
+        return res.status(200).json(userData);
+
+    }catch(err){
+        res.status(400).json({ message: 'Internal server error' });
+
+    }
+})
+
 
 
 

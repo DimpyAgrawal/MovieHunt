@@ -44,7 +44,7 @@ app.get('/search', async (req, res) => {
     const url = `http://www.omdbapi.com/?apikey=${apiKey}&s=${title}`;
     
     try {
-        console.log(title);
+        // console.log(title);
         const response = await axios.get(url);
         // console.log(response.data);
         res.json(response.data);
@@ -69,7 +69,7 @@ app.get('/movieById', async (req, res) => {
         console.log(imdbID);
         const response = await axios.get(url);
         if (response.data.Response === "True") {
-            console.log(response.data);
+            // console.log(response.data);
             res.json(response.data);
         } else {
             res.status(404).json({ error: response.data.Error });
